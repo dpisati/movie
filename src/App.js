@@ -7,22 +7,40 @@ import movieDBlogo from "./moviedb_logo.png";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { icon: "search" };
   }
 
   componentDidMount() {
     this.trendingChangeHandler();
   }
 
+  cleanSearch() {
+    document.getElementsByClassName("inputSearch")[0].value = "";
+    this.trendingChangeHandler();
+    this.setState({ icon: "search" });
+  }
+
+  changeSearchIcon() {
+    if (this.state.icon === "search") {
+      return "https://img.icons8.com/material-sharp/24/000000/search.png";
+    } else {
+      return "https://img.icons8.com/ios/24/000000/circled-x.png";
+    }
+  }
+
   searchChangeHandler(event) {
     const boundObject = this;
     const searchTerm = event.target.value;
+    this.setState({ searchField: searchTerm });
     if (searchTerm === "") {
       this.trendingChangeHandler();
+      this.setState({ icon: "search" });
     } else {
       boundObject.performSearch(searchTerm);
+      this.setState({ icon: "x" });
     }
   }
+
   trendingChangeHandler() {
     const boundObject = this;
     boundObject.trendingShow();
@@ -106,6 +124,12 @@ class App extends Component {
                 onChange={this.searchChangeHandler.bind(this)}
                 placeholder="Search movie..."
               />
+              <img
+                onClick={this.cleanSearch.bind(this)}
+                alt="searchIcon"
+                className="searchIcon"
+                src={this.changeSearchIcon()}
+              />
               <a
                 href="https://www.themoviedb.org"
                 target="_blank"
@@ -123,7 +147,7 @@ class App extends Component {
 
         <div className="container">{this.state.rows}</div>
         <div className="footer">
-          "This product uses the TMDb API but is not endorsed or certified by
+          "This website uses the TMDb API but is not endorsed or certified by
           TMDb."
         </div>
       </div>
